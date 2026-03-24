@@ -6,19 +6,22 @@ import { fruits } from '../data/fruits';
 import { useRouter } from 'next/navigation';
 
 export default function DashboardPage() {
-  const { user, logout } = useAuth();
+  const { user, isLoaded, logout } = useAuth();
   const router = useRouter();
   const [orders, setOrders] = useState([]);
   const [activeTab, setActiveTab] = useState('overview');
 
   useEffect(() => {
-    if (!user) { router.push('/login'); return; }
-    try {
-      setOrders(JSON.parse(localStorage.getItem('fr_orders') || '[]'));
-    } catch {}
-  }, [user, router]);
+    if (isLoaded) {
+      if (!user) { router.push('/login'); return; }
+      try {
+        const allOrders = JSON.parse(localStorage.getItem('fr_orders') || '[]');
+        setOrders(allOrders.filter(o => o.userEmail === user.email));
+      } catch {}
+    }
+  }, [user, isLoaded, router]);
 
-  if (!user) return null;
+  if (!isLoaded || !user) return null;
 
   const totalSpent = orders.reduce((s, o) => s + o.total, 0);
   const recentOrders = orders.slice(0, 3);

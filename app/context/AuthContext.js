@@ -1,5 +1,5 @@
 'use client';
-import { createContext, useContext, useReducer, useEffect } from 'react';
+import { createContext, useContext, useReducer, useEffect, useState } from 'react';
 
 const AuthContext = createContext(null);
 
@@ -14,12 +14,14 @@ function authReducer(state, action) {
 
 export function AuthProvider({ children }) {
   const [user, dispatch] = useReducer(authReducer, null);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     try {
       const saved = localStorage.getItem('fr_user');
       if (saved) dispatch({ type: 'LOAD', payload: JSON.parse(saved) });
     } catch {}
+    setIsLoaded(true);
   }, []);
 
   const login = (userData) => {
@@ -33,7 +35,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, isLoaded, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

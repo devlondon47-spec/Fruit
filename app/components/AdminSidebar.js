@@ -1,9 +1,20 @@
 'use client';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { useAuth } from '../context/AuthContext';
+import { useEffect } from 'react';
 
 export default function AdminSidebar({ role = 'admin' }) {
   const path = usePathname();
+  const router = useRouter();
+  const { user, isLoaded } = useAuth();
+
+  useEffect(() => {
+    if (isLoaded) {
+      if (!user) router.push('/login');
+      else if (user.role !== role) router.push('/login');
+    }
+  }, [user, isLoaded, role, router]);
 
   const adminLinks = [
     { href: '/admin', label: 'Dashboard', icon: '📊' },

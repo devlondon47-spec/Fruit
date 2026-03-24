@@ -27,7 +27,11 @@ export default function ProductCard({ product }) {
           borderBottom: '1px solid rgba(212,175,55,0.08)',
           overflow: 'hidden',
         }}>
-          <span style={{ filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.4))' }}>{product.emoji}</span>
+          {product.image ? (
+            <img src={product.image} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} loading="lazy" />
+          ) : (
+            <span style={{ filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.4))' }}>{product.emoji}</span>
+          )}
           {/* Badge */}
           {product.badge && (
             <span className="badge badge-gold" style={{

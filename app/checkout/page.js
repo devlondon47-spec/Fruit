@@ -3,9 +3,11 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 
 export default function CheckoutPage() {
   const { cartItems, cartTotal, clearCart } = useCart();
+  const { user } = useAuth();
   const router = useRouter();
   const [form, setForm] = useState({ name: '', email: '', phone: '', address: '', city: '', pin: '', payment: 'upi' });
   const [placing, setPlacing] = useState(false);
@@ -28,17 +30,19 @@ export default function CheckoutPage() {
     await new Promise(r => setTimeout(r, 1500));
     const order = {
       id: `ORD-${Date.now()}`,
+      userEmail: user?.email || form.email,
+      customerName: form.name || user?.name || 'Guest',
       items: cartItems,
       total: grandTotal,
       address: form.address + ', ' + form.city,
       payment: form.payment,
-      status: 'Processing',
+      status: 'Pending', // Needs Admin Approval
       date: new Date().toISOString(),
     };
     const prev = JSON.parse(localStorage.getItem('fr_orders') || '[]');
     localStorage.setItem('fr_orders', JSON.stringify([order, ...prev]));
     clearCart();
-    router.push('/orders');
+    router.push('/dashboard');
   };
 
   const paymentMethods = [

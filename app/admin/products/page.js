@@ -44,7 +44,11 @@ export default function AdminProducts() {
                   <tr key={p.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)', background: i % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.01)' }}>
                     <td style={{ padding: '12px 16px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <span style={{ fontSize: '1.6rem' }}>{p.emoji}</span>
+                        {p.image ? (
+                          <img src={p.image} alt={p.name} style={{ width: 44, height: 44, borderRadius: 'var(--radius-sm)', objectFit: 'cover' }} />
+                        ) : (
+                          <span style={{ fontSize: '1.6rem' }}>{p.emoji}</span>
+                        )}
                         <div>
                           <div style={{ fontWeight: 600 }}>{p.name}</div>
                           <div style={{ fontSize: '0.72rem', color: 'var(--grey)' }}>{p.origin} · {p.weight}</div>
