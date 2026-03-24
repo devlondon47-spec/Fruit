@@ -33,7 +33,7 @@ export default function VendorDashboard() {
           <StatCard icon="💰" label="Total Earnings" value={`₹${totalEarnings.toLocaleString()}`} sub="After commission" color="var(--gold)" />
           <StatCard icon="⏳" label="Pending Payout" value={`₹${pendingPayouts.toLocaleString()}`} sub="Awaiting delivery" color="#f39c12" />
           <StatCard icon="📦" label="Active Orders" value={vendorOrders.filter(o => o.status === 'Processing').length} sub="In progress" color="#3498db" />
-          <StatCard icon="🍇" label="Products Listed", value={vendorProducts.length} sub="2 low stock" color="var(--success)" />
+          <StatCard icon="🍇" label="Products Listed" value={vendorProducts.length} sub="2 low stock" color="var(--success)" />
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
