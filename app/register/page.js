@@ -14,8 +14,22 @@ export default function RegisterPage() {
     e.preventDefault();
     setLoading(true);
     await new Promise(r => setTimeout(r, 1000));
-    login({ name: form.name, email: form.email, phone: form.phone, role: 'user' });
-    router.push('/');
+    
+    const email = form.email.toLowerCase().trim();
+    const newUser = { name: form.name, email, phone: form.phone, password: form.password, role: 'user' };
+    
+    try {
+      const users = JSON.parse(localStorage.getItem('fr_users') || '[]');
+      if (users.find(u => u.email === email)) {
+        alert("Email already registered! Please sign in.");
+        setLoading(false);
+        return;
+      }
+      localStorage.setItem('fr_users', JSON.stringify([...users, newUser]));
+    } catch {}
+
+    login({ name: form.name, email, phone: form.phone, role: 'user' });
+    router.push('/dashboard');
   };
 
   const benefits = ['🎁 15% off first order', '🚀 Free express delivery', '👑 Exclusive member drops', '🌿 Personalized picks'];

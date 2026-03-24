@@ -21,25 +21,40 @@ export default function LoginPage() {
     const email = form.email.toLowerCase().trim();
     const pass = form.password.trim();
 
-    if (pass !== 'pass123') {
-      setError('Invalid password. Please use pass123');
-      return;
-    }
+    // 1. Check registered dynamic users in localStorage
+    try {
+      const users = JSON.parse(localStorage.getItem('fr_users') || '[]');
+      const foundUser = users.find(u => u.email === email && u.password === pass);
+      if (foundUser) {
+        login({ name: foundUser.name, email: foundUser.email, role: foundUser.role || 'user' });
+        const route = foundUser.role === 'admin' ? '/admin' : foundUser.role === 'vendor' ? '/vendor' : foundUser.role === 'superadmin' ? '/superadmin' : '/dashboard';
+        router.push(route);
+        return;
+      }
+      // If email exists but password wrong
+      if (users.find(u => u.email === email)) {
+        setError('Invalid password. Please try again.');
+        return;
+      }
+    } catch {}
 
-    if (email === 'admin@fruitroyale.com') {
-      login({ name: 'Platform Admin', email, role: 'admin' });
-      router.push('/admin');
-    } else if (email === 'vendor@fruitroyale.com') {
-      login({ name: 'Mango Orchards', email, role: 'vendor' });
-      router.push('/vendor');
-    } else if (email === 'super@fruitroyale.com') {
-      login({ name: 'Super Admin', email, role: 'superadmin' });
-      router.push('/superadmin');
-    } else if (email === 'user@fruitroyale.com') {
-      login({ name: 'Royal Customer', email, role: 'user' });
-      router.push('/dashboard');
+    // 2. Fallback to hardcoded demo credentials
+    const demoRoutes = {
+      'admin@fruitroyale.com': { role: 'admin', path: '/admin', name: 'Platform Admin' },
+      'vendor@fruitroyale.com': { role: 'vendor', path: '/vendor', name: 'Mango Orchards' },
+      'super@fruitroyale.com': { role: 'superadmin', path: '/superadmin', name: 'Super Admin' },
+      'user@fruitroyale.com': { role: 'user', path: '/dashboard', name: 'Royal Customer' }
+    };
+
+    if (demoRoutes[email]) {
+      if (pass !== 'pass123') {
+        setError('Invalid password. Please try again.');
+        return;
+      }
+      login({ name: demoRoutes[email].name, email, role: demoRoutes[email].role });
+      router.push(demoRoutes[email].path);
     } else {
-      setError('Account not found. Try user@fruitroyale.com');
+      setError('Account not found. Please register first.');
     }
   };
 
