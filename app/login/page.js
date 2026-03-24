@@ -18,8 +18,8 @@ export default function LoginPage() {
     setLoading(false);
     
     // Strict mock credential checking
-    const email = form.email.toLowerCase();
-    const pass = form.password;
+    const email = form.email.toLowerCase().trim();
+    const pass = form.password.trim();
 
     if (pass !== 'pass123') {
       setError('Invalid password. Please use pass123');
